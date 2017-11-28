@@ -1,0 +1,18 @@
+OK bag of words
+OK + dictionary(słownik słow angielskich)
+OK +mozna polepszyc: stop words (np przedimki ) mozna usunac (stop words removal) (mozna zlapac z gugli)
+OK +stemming: sprowadzanie do rdzenia, mozna do tego uzyc algorytmow (np porter stemmer lepiej chyba 2 wersja)
+OK +IDF inverse document frequency
+
+N - liczba dokumentow
+nw - ilosc dokumentow gdzie wystapilo slowo
+
+kazda kolumne macierzy mnozymy przez IDF(w)
+
++ normalizacja, sprowadzenie wektora (*) dodatkowe, sprawsdzic czy ma sens, przy tekstach ktore sie roznia dosc bardzo ma sens
+
++ im wyzsza korelacja tym lepszy wynik(chyba im wiekszy kat)
++ jakies gui proste do tego
+
++ przeliczac te dane raz na jakis czas, zapisywac tę macierz 
++ na metodach rzadkich operacje
