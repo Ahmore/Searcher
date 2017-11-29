@@ -49,7 +49,7 @@ class WikiPipeline(object):
 
         print("Saving to file...")
         st = time.time()
-        index.save_to_json("wikiindex.json")
+        index.save_to_json()
         print("--- %s seconds ---" % (time.time() - st))
 
         print("")

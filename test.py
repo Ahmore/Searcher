@@ -1,6 +1,7 @@
 import re
 import string
 
+from engine import jsonindexstorage
 from engine.index import Index
 import numpy as np
 from nltk.stem.porter import PorterStemmer
@@ -27,14 +28,14 @@ c = {
     }
 }
 
-index = Index(c)
-index.init_dictionary()
-index.create_index()
-index.parse_matrix_with_idf()
-index.save_to_json("index.json")
-
-print(index.dictionary)
-print(index.matrix)
+# index = Index(c)
+# index.init_dictionary()
+# index.create_index()
+# index.parse_matrix_with_idf()
+# index.save_to_json("index.json")
+#
+# print(index.dictionary)
+# print(index.matrix)
 
 # s = 'This is some \\u03c0 text that has to be cleaned\\u2026! it\\u0027s annoying!'
 # print(s.encode('utf-8'))
@@ -63,3 +64,6 @@ print(index.matrix)
 # a = [1, 2, 3]
 # print(a.index(2))
 # print(a.index(4))
+
+# storage = jsonindexstorage.JSONIndexStorage("wikiindex.json")
+# print(storage.load()["documents"])

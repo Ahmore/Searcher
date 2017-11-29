@@ -7,12 +7,17 @@ from nltk.corpus import stopwords as nltk_stopwords
 from nltk.stem.porter import PorterStemmer
 import re
 
+from engine import jsonindexstorage
+
 
 class Index:
     def __init__(self, documents):
         self.documents = documents
         self.dictionary = []
         self.matrix = []
+
+        # Init storage
+        self.storage = jsonindexstorage.JSONIndexStorage("wikiindex.json")
 
         # Download stopwords
         nltk.download('stopwords')
@@ -77,15 +82,14 @@ class Index:
 
             i += 1
 
-    def save_to_json(self, filename):
+    def save_to_json(self):
         data = {
             "dictionary": self.dictionary,
             "documents": [{"url": self.documents[key]["url"], "title": self.documents[key]["title"]} for key in self.documents],
             "matrix": self.matrix.tolist()
         }
 
-        with open(filename, 'w') as f:
-            json.dump(data, f)
+        self.storage.save(data)
 
     @staticmethod
     def get_words(content):
