@@ -9,8 +9,6 @@ import re
 
 
 class Index:
-    filename = "index.json"
-
     def __init__(self, documents):
         self.documents = documents
         self.dictionary = []
@@ -24,17 +22,23 @@ class Index:
 
     def init_dictionary(self):
         for key in self.documents:
-            content = self.documents[key]["content"]
+            words = self.get_words(self.documents[key]["content"])
+            parsed_words = []
 
-            words = self.get_words(content)
-            words = self.clear_words_from_unicode(words)
-            words = self.clear_words_from_punctuation(words)
-            words = self.basic_filter(words)
-            words = self.remove_numeric(words)
-            words = self.remove_stop_words(words)
-            words = self.use_porter_stemmer(words)
+            for word in words:
+                # Parsing
+                word = self.clear_words_from_unicode(word)
+                word = self.clear_words_from_punctuation(word)
+                word = self.other_clear(word)
 
-            self.documents[key]["words"] = words
+                # Filtering
+                if not (self.is_empty(word) or self.is_numeric(word) or self.is_stop_words(word)):
+                    # Stemming
+                    word = self.use_porter_stemmer(word)
+
+                parsed_words.append(word)
+
+            self.documents[key]["words"] = parsed_words
 
         for key in self.documents:
             for word in self.documents[key]["words"]:
@@ -62,19 +66,20 @@ class Index:
         for word in self.dictionary:
             nw = len(list(filter(lambda x: (x > 0), self.matrix[:, i])))
 
-            for j in range(documents_amount):
-                self.matrix[j][i] *= np.math.log(documents_amount / nw)
+            if nw > 0:
+                for j in range(documents_amount):
+                    self.matrix[j][i] *= np.math.log(documents_amount / nw)
 
             i += 1
 
-    def save_to_json(self):
+    def save_to_json(self, filename):
         data = {
             "dictionary": self.dictionary,
             "documents": [{"url": self.documents[key]["url"], "title": self.documents[key]["title"]} for key in self.documents],
             "matrix": self.matrix.tolist()
         }
 
-        with open(self.filename, 'w') as f:
+        with open(filename, 'w') as f:
             json.dump(data, f)
 
     @staticmethod
@@ -85,26 +90,28 @@ class Index:
         return flat_list
 
     @staticmethod
-    def clear_words_from_unicode(words):
-        return [re.sub(r'(\\u[0-9A-Fa-f]+)', lambda c: "", word) for word in words]
+    def clear_words_from_unicode(word):
+        return re.sub(r'(\\u[0-9A-Fa-f]+)', lambda c: "", word)
 
     @staticmethod
-    def clear_words_from_punctuation(words):
-        return [word.translate(str.maketrans("", "", string.punctuation)) for word in words]
+    def clear_words_from_punctuation(word):
+        return word.translate(str.maketrans("", "", string.punctuation))
 
     @staticmethod
-    def basic_filter(words):
-        strings = ["", "\n"]
-
-        return list(filter(lambda x: (x not in strings), words))
+    def other_clear(word):
+        return re.sub(r'(\n+)', lambda c: "", word)
 
     @staticmethod
-    def remove_numeric(words):
-        return list(filter(lambda x: not x.isdigit(), words))
+    def is_empty(word):
+        return word == ""
 
     @staticmethod
-    def remove_stop_words(words):
-        return [word for word in words if word not in stopwords.words('english')]
+    def is_numeric(word):
+        return word.isdigit()
 
-    def use_porter_stemmer(self, words):
-        return [self.porter_stemmer.stem(word) for word in words]
+    @staticmethod
+    def is_stop_words(word):
+        return word in stopwords.words('english')
+
+    def use_porter_stemmer(self, word):
+        return self.porter_stemmer.stem(word)

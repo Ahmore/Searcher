@@ -14,7 +14,7 @@ BOT_NAME = 'wikibot'
 SPIDER_MODULES = ['wikibot.spiders']
 NEWSPIDER_MODULE = 'wikibot.spiders'
 
-CLOSESPIDER_ITEMCOUNT = 50
+CLOSESPIDER_ITEMCOUNT = 10
 LOG_ENABLED = False
 LOG_STDOUT = False
 

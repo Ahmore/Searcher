@@ -7,7 +7,7 @@ OK +IDF inverse document frequency
 N - liczba dokumentow
 nw - ilosc dokumentow gdzie wystapilo slowo
 
-kazda kolumne macierzy mnozymy przez IDF(w)
+OK kazda kolumne macierzy mnozymy przez IDF(w)
 
 + normalizacja, sprowadzenie wektora (*) dodatkowe, sprawsdzic czy ma sens, przy tekstach ktore sie roznia dosc bardzo ma sens
 
