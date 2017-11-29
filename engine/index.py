@@ -41,9 +41,7 @@ class Index:
                     # Stemming
                     word = self.use_porter_stemmer(word)
 
-                    # Check if is in english dictionary
-                    if word in self.nltk_words:
-                        parsed_words.append(word)
+                    parsed_words.append(word)
 
             self.documents[key]["words"] = parsed_words
 
@@ -51,8 +49,8 @@ class Index:
             for word in self.documents[key]["words"]:
                 self.dictionary.append(word)
 
-        # Dictionary without duplicates
-        self.dictionary = list(set(self.dictionary))
+        # Dictionary without duplicates and limited to dictionary
+        self.dictionary = list(set(self.dictionary).intersection(self.nltk_words))
 
     def create_index(self):
         matrix = np.zeros((len(self.documents), len(self.dictionary)))
