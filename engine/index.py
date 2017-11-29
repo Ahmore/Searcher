@@ -1,9 +1,9 @@
 import json
 import string
-
+from nltk.corpus import words as nltk_words
 import numpy as np
 import nltk
-from nltk.corpus import stopwords
+from nltk.corpus import stopwords as nltk_stopwords
 from nltk.stem.porter import PorterStemmer
 import re
 
@@ -16,6 +16,11 @@ class Index:
 
         # Download stopwords
         nltk.download('stopwords')
+        nltk.download('words')
+
+        # Words and stopwords
+        self.nltk_words = nltk_words.words()
+        self.nltk_stopwords = nltk_stopwords.words('english')
 
         # Init stemmers
         self.porter_stemmer = PorterStemmer()
@@ -32,11 +37,13 @@ class Index:
                 word = self.other_clear(word)
 
                 # Filtering
-                if not (self.is_empty(word) or self.is_numeric(word) or self.is_stop_words(word)):
+                if not (self.is_empty(word) or self.is_stop_words(word)):
                     # Stemming
                     word = self.use_porter_stemmer(word)
 
-                parsed_words.append(word)
+                    # Check if is in english dictionary
+                    if word in self.nltk_words:
+                        parsed_words.append(word)
 
             self.documents[key]["words"] = parsed_words
 
@@ -105,13 +112,8 @@ class Index:
     def is_empty(word):
         return word == ""
 
-    @staticmethod
-    def is_numeric(word):
-        return word.isdigit()
-
-    @staticmethod
-    def is_stop_words(word):
-        return word in stopwords.words('english')
+    def is_stop_words(self, word):
+        return word in self.nltk_stopwords
 
     def use_porter_stemmer(self, word):
         return self.porter_stemmer.stem(word)
