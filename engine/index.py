@@ -1,13 +1,5 @@
-import json
-import string
-from nltk.corpus import words as nltk_words
 import numpy as np
-import nltk
-from nltk.corpus import stopwords as nltk_stopwords
-from nltk.stem.porter import PorterStemmer
-import re
-
-from engine import jsonindexstorage
+from engine import jsonstorage, stringparser
 
 
 class Index:
@@ -16,46 +8,22 @@ class Index:
         self.dictionary = []
         self.matrix = []
 
+        # Init parser
+        self.parser = stringparser.StringParser()
+
         # Init storage
-        self.storage = jsonindexstorage.JSONIndexStorage("wikiindex.json")
-
-        # Download stopwords
-        nltk.download('stopwords')
-        nltk.download('words')
-
-        # Words and stopwords
-        self.nltk_words = nltk_words.words()
-        self.nltk_stopwords = nltk_stopwords.words('english')
-
-        # Init stemmers
-        self.porter_stemmer = PorterStemmer()
+        self.storage = jsonstorage.JSONStorage("wikiindex.json")
 
     def init_dictionary(self):
         for key in self.documents:
-            words = self.get_words(self.documents[key]["content"])
-            parsed_words = []
-
-            for word in words:
-                # Parsing
-                word = self.clear_words_from_unicode(word)
-                word = self.clear_words_from_punctuation(word)
-                word = self.other_clear(word)
-
-                # Filtering
-                if not (self.is_empty(word) or self.is_stop_words(word)):
-                    # Stemming
-                    word = self.use_porter_stemmer(word)
-
-                    parsed_words.append(word)
-
-            self.documents[key]["words"] = parsed_words
+            self.documents[key]["words"] = self.parser.parse(self.documents[key]["content"])
 
         for key in self.documents:
             for word in self.documents[key]["words"]:
                 self.dictionary.append(word)
 
         # Dictionary without duplicates and limited to dictionary
-        self.dictionary = list(set(self.dictionary).intersection(self.nltk_words))
+        self.dictionary = list(set(self.dictionary).intersection(self.parser.nltk_words))
 
     def create_index(self):
         matrix = np.zeros((len(self.documents), len(self.dictionary)))
@@ -69,7 +37,7 @@ class Index:
 
         self.matrix = matrix
 
-    def parse_matrix_with_idf(self):
+    def idf(self):
         documents_amount = len(self.documents)
         i = 0
 
@@ -82,7 +50,7 @@ class Index:
 
             i += 1
 
-    def save_to_json(self):
+    def save(self):
         data = {
             "dictionary": self.dictionary,
             "documents": [{"url": self.documents[key]["url"], "title": self.documents[key]["title"]} for key in self.documents],
@@ -90,32 +58,3 @@ class Index:
         }
 
         self.storage.save(data)
-
-    @staticmethod
-    def get_words(content):
-        splitted = [words.split(" ") for words in content]
-        flat_list = [item.strip().lower() for sublist in splitted for item in sublist]
-
-        return flat_list
-
-    @staticmethod
-    def clear_words_from_unicode(word):
-        return re.sub(r'(\\u[0-9A-Fa-f]+)', lambda c: "", word)
-
-    @staticmethod
-    def clear_words_from_punctuation(word):
-        return word.translate(str.maketrans("", "", string.punctuation))
-
-    @staticmethod
-    def other_clear(word):
-        return re.sub(r'(\n+)', lambda c: "", word)
-
-    @staticmethod
-    def is_empty(word):
-        return word == ""
-
-    def is_stop_words(self, word):
-        return word in self.nltk_stopwords
-
-    def use_porter_stemmer(self, word):
-        return self.porter_stemmer.stem(word)

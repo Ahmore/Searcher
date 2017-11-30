@@ -1,7 +1,7 @@
 import json
 
 
-class JSONIndexStorage:
+class JSONStorage:
     def __init__(self, filename):
         self.filename = filename
 
@@ -10,6 +10,5 @@ class JSONIndexStorage:
             return json.load(json_data)
 
     def save(self, data):
-        print("saving...")
         with open(self.filename, 'w') as f:
             json.dump(data, f)

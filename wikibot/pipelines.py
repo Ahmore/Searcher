@@ -42,14 +42,14 @@ class WikiPipeline(object):
 
         print("IDF parsing...")
         st = time.time()
-        index.parse_matrix_with_idf()
+        index.idf()
         print("--- %s seconds ---" % (time.time() - st))
 
         print("")
 
         print("Saving to file...")
         st = time.time()
-        index.save_to_json()
+        index.save()
         print("--- %s seconds ---" % (time.time() - st))
 
         print("")
