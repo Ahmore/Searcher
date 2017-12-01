@@ -47,16 +47,16 @@ class WikiPipeline(object):
 
         print("")
 
-        print("Normalizing...")
+        print("Delete noise...")
         st = time.time()
-        index.normalize()
+        index.delete_noise(10)
         print("--- %s seconds ---" % (time.time() - st))
 
         print("")
 
-        print("Delete noise...")
+        print("Normalizing...")
         st = time.time()
-        index.delete_noise(10)
+        index.normalize()
         print("--- %s seconds ---" % (time.time() - st))
 
         print("")

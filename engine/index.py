@@ -52,13 +52,6 @@ class Index:
 
             i += 1
 
-    def normalize(self):
-        normalized = []
-        for i in range(len(self.matrix)):
-            normalized.append(Normalizer.normalize(self.matrix[i]))
-
-        self.matrix = np.array(normalized)
-
     def delete_noise(self, k):
         u, s, v = np.linalg.svd(self.matrix)
 
@@ -66,7 +59,14 @@ class Index:
         s = s[:k]
         v = v[:k, :]
 
-        self.matrix = np.asmatrix(u) * np.asmatrix(np.diag(s)) * np.asmatrix(v)
+        self.matrix = np.array(np.asmatrix(u) * np.asmatrix(np.diag(s)) * np.asmatrix(v))
+
+    def normalize(self):
+        normalized = []
+        for i in range(len(self.matrix)):
+            normalized.append(Normalizer.normalize(self.matrix[i]))
+
+        self.matrix = np.array(normalized)
 
     def save(self):
         data = {
