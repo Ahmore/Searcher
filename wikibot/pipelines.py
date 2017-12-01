@@ -1,21 +1,31 @@
 import time
-from scrapy.exceptions import DropItem
+from scrapy.exceptions import DropItem, CloseSpider
 from engine.index import Index
 
 
 class WikiPipeline(object):
     documents = {}
 
+    def __init__(self):
+        self.start_time = 0
+        self.n = 0
+        self.k = 0
+
     def process_item(self, item, spider):
-        if len(self.documents) < 1000:
+        if len(self.documents) < self.n:
             if item["url"] in self.documents:
                 raise DropItem("Duplicate item found: %s" % item["url"])
             else:
                 self.documents[item["url"]] = item
+        else:
+            spider.close_down = True
 
     def open_spider(self, spider):
         print("Web crawling...")
         self.start_time = time.time()
+
+        self.n = spider.n
+        self.k = spider.k
 
     def close_spider(self, spider):
         print("--- %s seconds ---" % (time.time() - self.start_time))
@@ -50,7 +60,7 @@ class WikiPipeline(object):
 
         print("Delete noise...")
         st = time.time()
-        index.delete_noise(900)
+        index.delete_noise(self.k)
         print("--- %s seconds ---" % (time.time() - st))
 
         print("")
