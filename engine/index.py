@@ -24,8 +24,7 @@ class Index:
                 self.dictionary.append(word)
 
         # Dictionary without duplicates and limited to dictionary
-        self.dictionary = list(set(self.dictionary))
-        # self.dictionary = list(set(self.dictionary).intersection(self.parser.nltk_words))
+        self.dictionary = list(set(self.dictionary).intersection(self.parser.nltk_words))
 
     def create_index(self):
         matrix = np.zeros((len(self.documents), len(self.dictionary)))

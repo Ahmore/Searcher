@@ -9,10 +9,10 @@ nw - ilosc dokumentow gdzie wystapilo slowo
 
 OK kazda kolumne macierzy mnozymy przez IDF(w)
 
-+ normalizacja, sprowadzenie wektora (*) dodatkowe, sprawsdzic czy ma sens, przy tekstach ktore sie roznia dosc bardzo ma sens
+OK + normalizacja, sprowadzenie wektora (*) dodatkowe, sprawsdzic czy ma sens, przy tekstach ktore sie roznia dosc bardzo ma sens
 
-+ im wyzsza korelacja tym lepszy wynik(chyba im wiekszy kat)
+OK + im wyzsza korelacja tym lepszy wynik(chyba im wiekszy kat)
 + jakies gui proste do tego
 
-+ przeliczac te dane raz na jakis czas, zapisywac tę macierz 
+OK + przeliczac te dane raz na jakis czas, zapisywac tę macierz
 + na metodach rzadkich operacje

@@ -6,14 +6,14 @@ import string
 from nltk.corpus import brown
 
 
-class StringParser():
+class StringParser:
     def __init__(self):
         # Download stopwords
         nltk.download('stopwords')
         nltk.download("brown")
 
         # Words and stopwords
-        self.nltk_words = brown.words()
+        self.nltk_words = [word.lower() for word in brown.words()]
         self.nltk_stopwords = nltk_stopwords.words('english')
 
         # Init stemmers

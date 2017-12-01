@@ -5,12 +5,12 @@ from engine.normalizer import Normalizer
 
 
 class Search:
-    def __init__(self):
+    def __init__(self, filename):
         # Init parser
         self.parser = stringparser.StringParser()
 
         # Init storage
-        self.storage = jsonstorage.JSONStorage("wikiindex.json")
+        self.storage = jsonstorage.JSONStorage(filename)
 
         # Load from storage
         stg = self.storage.load()
