@@ -1,11 +1,19 @@
 import re
 import string
 
-from engine import jsonindexstorage
+import nltk
+
+from engine import jsonstorage
 from engine.index import Index
 import numpy as np
 from nltk.stem.porter import PorterStemmer
 from nltk.stem.snowball import SnowballStemmer
+# from nltk.corpus import brown
+# from nltk.corpus import words as nltk_words
+#
+# nltk.download("brown")
+# print(len(brown.words()))
+# print(len(nltk_words.words()))
 
 # a = ["aaa addd", "sddd"]
 # b = [words.split(" ") for words in a]
@@ -13,6 +21,8 @@ from nltk.stem.snowball import SnowballStemmer
 # print(flat_list)
 #
 # print(" a ")
+from engine.normalizer import Normalizer
+from engine.search import Search
 
 c = {
     "test": {
@@ -67,3 +77,17 @@ c = {
 
 # storage = jsonindexstorage.JSONIndexStorage("wikiindex.json")
 # print(storage.load()["documents"])
+
+# arr = np.array([[0, 0, 0], [4, 5, 6], [7, 8, 9]])
+# normalized = []
+# for i in range(len(arr)):
+#     # print(arr[i])
+#     a = Normalizer.normalize(arr[i])
+#     normalized.append(a)
+# print(np.array(normalized))
+
+search = Search()
+
+results = search.eval("Albert Einstein genius", 5)
+for i in range(len(results)):
+    print(results[i]["url"])

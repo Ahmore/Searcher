@@ -24,7 +24,8 @@ class Index:
                 self.dictionary.append(word)
 
         # Dictionary without duplicates and limited to dictionary
-        self.dictionary = list(set(self.dictionary).intersection(self.parser.nltk_words))
+        self.dictionary = list(set(self.dictionary))
+        # self.dictionary = list(set(self.dictionary).intersection(self.parser.nltk_words))
 
     def create_index(self):
         matrix = np.zeros((len(self.documents), len(self.dictionary)))
@@ -57,6 +58,15 @@ class Index:
             normalized.append(Normalizer.normalize(self.matrix[i]))
 
         self.matrix = np.array(normalized)
+
+    def delete_noise(self, k):
+        u, s, v = np.linalg.svd(self.matrix)
+
+        u = u[:, :k]
+        s = s[:k]
+        v = v[:k, :]
+
+        self.matrix = np.asmatrix(u) * np.asmatrix(np.diag(s)) * np.asmatrix(v)
 
     def save(self):
         data = {

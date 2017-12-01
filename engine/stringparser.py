@@ -4,6 +4,8 @@ from nltk.stem.porter import PorterStemmer
 import re
 import string
 from nltk.corpus import words as nltk_words
+from nltk.corpus import brown
+
 
 
 class StringParser():
@@ -11,9 +13,10 @@ class StringParser():
         # Download stopwords
         nltk.download('stopwords')
         nltk.download('words')
+        nltk.download("brown")
 
         # Words and stopwords
-        self.nltk_words = nltk_words.words()
+        self.nltk_words = brown.words()
         self.nltk_stopwords = nltk_stopwords.words('english')
 
         # Init stemmers

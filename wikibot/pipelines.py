@@ -47,6 +47,20 @@ class WikiPipeline(object):
 
         print("")
 
+        print("Normalizing...")
+        st = time.time()
+        index.normalize()
+        print("--- %s seconds ---" % (time.time() - st))
+
+        print("")
+
+        print("Delete noise...")
+        st = time.time()
+        index.delete_noise(10)
+        print("--- %s seconds ---" % (time.time() - st))
+
+        print("")
+
         print("Saving to file...")
         st = time.time()
         index.save()
