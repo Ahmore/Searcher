@@ -10,6 +10,8 @@ class WikiPipeline(object):
         self.start_time = 0
         self.n = 0
         self.k = 0
+        self.filename = ""
+        self.svd = True
 
     def process_item(self, item, spider):
         if len(self.documents) < self.n:
@@ -26,6 +28,8 @@ class WikiPipeline(object):
 
         self.n = spider.n
         self.k = spider.k
+        self.filename = spider.filename
+        self.svd = spider.svd
 
     def close_spider(self, spider):
         print("--- %s seconds ---" % (time.time() - self.start_time))
@@ -33,7 +37,7 @@ class WikiPipeline(object):
         print("")
 
         print("Indexing...")
-        index = Index(self.documents)
+        index = Index(self.documents, self.filename)
 
         print("")
 
@@ -58,12 +62,13 @@ class WikiPipeline(object):
 
         print("")
 
-        print("Delete noise...")
-        st = time.time()
-        index.delete_noise(self.k)
-        print("--- %s seconds ---" % (time.time() - st))
+        if self.svd:
+            print("Delete noise...")
+            st = time.time()
+            index.delete_noise(self.k)
+            print("--- %s seconds ---" % (time.time() - st))
 
-        print("")
+            print("")
 
         print("Normalizing...")
         st = time.time()

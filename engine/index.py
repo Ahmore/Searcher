@@ -4,7 +4,7 @@ from engine.normalizer import Normalizer
 
 
 class Index:
-    def __init__(self, documents):
+    def __init__(self, documents, filename):
         self.documents = documents
         self.dictionary = []
         self.matrix = []
@@ -13,7 +13,7 @@ class Index:
         self.parser = stringparser.StringParser()
 
         # Init storage
-        self.storage = jsonstorage.JSONStorage("wikiindex.json")
+        self.storage = jsonstorage.JSONStorage(filename)
 
     def init_dictionary(self):
         for key in self.documents:
