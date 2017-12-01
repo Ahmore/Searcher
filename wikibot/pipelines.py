@@ -7,10 +7,11 @@ class WikiPipeline(object):
     documents = {}
 
     def process_item(self, item, spider):
-        if item["url"] in self.documents:
-            raise DropItem("Duplicate item found: %s" % item["url"])
-        else:
-            self.documents[item["url"]] = item
+        if len(self.documents) < 1000:
+            if item["url"] in self.documents:
+                raise DropItem("Duplicate item found: %s" % item["url"])
+            else:
+                self.documents[item["url"]] = item
 
     def open_spider(self, spider):
         print("Web crawling...")
@@ -49,7 +50,7 @@ class WikiPipeline(object):
 
         print("Delete noise...")
         st = time.time()
-        index.delete_noise(10)
+        index.delete_noise(900)
         print("--- %s seconds ---" % (time.time() - st))
 
         print("")

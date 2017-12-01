@@ -3,16 +3,13 @@ from nltk.corpus import stopwords as nltk_stopwords
 from nltk.stem.porter import PorterStemmer
 import re
 import string
-from nltk.corpus import words as nltk_words
 from nltk.corpus import brown
-
 
 
 class StringParser():
     def __init__(self):
         # Download stopwords
         nltk.download('stopwords')
-        nltk.download('words')
         nltk.download("brown")
 
         # Words and stopwords
