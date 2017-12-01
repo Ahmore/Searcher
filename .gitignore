@@ -4,3 +4,4 @@
 out
 gen
 *.json
+test.py

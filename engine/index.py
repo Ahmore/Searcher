@@ -1,5 +1,6 @@
 import numpy as np
 from engine import jsonstorage, stringparser
+from engine.normalizer import Normalizer
 
 
 class Index:
@@ -49,6 +50,13 @@ class Index:
                     self.matrix[j][i] *= np.math.log(documents_amount / nw)
 
             i += 1
+
+    def normalize(self):
+        normalized = []
+        for i in range(len(self.matrix)):
+            normalized.append(Normalizer.normalize(self.matrix[i]))
+
+        self.matrix = np.array(normalized)
 
     def save(self):
         data = {
