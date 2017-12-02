@@ -5,13 +5,26 @@ import time
 from engine.index import Index
 from engine.jsonstorage import JSONStorage
 
+
+def slice_dict(dictionary, n):
+    result = {}
+
+    for key in dictionary:
+        if len(result) < n:
+            result[key] = dictionary[key]
+        else:
+            break
+
+    return result
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--n", type=int, required=True)
     parser.add_argument("--input", type=str, required=True)
     parser.add_argument("--output", type=str, required=True)
     parser.add_argument("-lra", help="Use LRA", action='store_true')
-    parser.add_argument("--k", type=int, required=True)
+    parser.add_argument("--k", type=int)
     args = parser.parse_args()
 
     start_time = time.time()
@@ -19,7 +32,7 @@ if __name__ == "__main__":
     print("[Loading documents from JSON]")
     storage = JSONStorage(args.input)
     st = time.time()
-    documents = storage.load()
+    documents = slice_dict(storage.load()["documents"], args.n)
     print("--- %s seconds ---" % (time.time() - st))
 
     print("")
