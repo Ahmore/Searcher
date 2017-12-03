@@ -26,7 +26,7 @@ class WikiPipeline(object):
 
         print("[Saving to file]")
         st = time.time()
-        storage = JSONStorage("wikidocuments%d.json" % self.start_time)
+        storage = JSONStorage("documents/wikidocuments%d.json" % self.start_time)
         storage.save({
             "documents": self.documents
         })
