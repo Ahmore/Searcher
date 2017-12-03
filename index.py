@@ -23,6 +23,7 @@ if __name__ == "__main__":
     parser.add_argument("--n", type=int, required=True)
     parser.add_argument("--input", type=str, required=True)
     parser.add_argument("--output", type=str, required=True)
+    parser.add_argument("-idf", help="Use IDF", action='store_true')
     parser.add_argument("-lra", help="Use LRA", action='store_true')
     parser.add_argument("--k", type=int)
     args = parser.parse_args()
@@ -56,17 +57,18 @@ if __name__ == "__main__":
 
     print("")
 
-    print("[IDF]")
-    st = time.time()
-    index.idf()
-    print("--- %s seconds ---" % (time.time() - st))
+    if args.idf:
+        print("[IDF]")
+        st = time.time()
+        index.idf()
+        print("--- %s seconds ---" % (time.time() - st))
 
-    print("")
+        print("")
 
     if args.lra:
-        print("[Deleting noise]")
+        print("[LRA]")
         st = time.time()
-        index.delete_noise(args.k)
+        index.lra(args.k)
         print("--- %s seconds ---" % (time.time() - st))
 
         print("")

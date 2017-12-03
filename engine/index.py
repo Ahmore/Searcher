@@ -42,7 +42,7 @@ class Index:
         documents_amount = len(self.documents)
         i = 0
 
-        for word in self.dictionary:
+        for i in range(documents_amount):
             nw = len(list(filter(lambda x: (x > 0), self.matrix[:, i])))
 
             if nw > 0:
@@ -51,7 +51,7 @@ class Index:
 
             i += 1
 
-    def delete_noise(self, k):
+    def lra(self, k):
         u, s, v = np.linalg.svd(self.matrix)
 
         u = u[:, :k]
