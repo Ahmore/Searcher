@@ -4,3 +4,5 @@
 out
 gen
 *.json
+engine/__pycache__
+wikibot/__pycache__/
