@@ -1,4 +1,6 @@
 import numpy as np
+import scipy.sparse
+
 from engine import jsonstorage, stringparser
 from engine.normalizer import Normalizer
 
@@ -36,42 +38,29 @@ class Index:
                     matrix[i][self.dictionary.index(word)] += 1
             i += 1
 
-        self.matrix = matrix
+        self.matrix = scipy.sparse.csc_matrix(matrix)
 
     def idf(self):
+        words_amount = len(self.dictionary)
         documents_amount = len(self.documents)
-        i = 0
 
-        for i in range(documents_amount):
-            nw = len(list(filter(lambda x: (x > 0), self.matrix[:, i])))
-
-            if nw > 0:
-                for j in range(documents_amount):
-                    self.matrix[j][i] *= np.math.log(documents_amount / nw)
-
-            i += 1
+        for i in range(words_amount):
+            nw = self.matrix[:, i].getnnz()
+            self.matrix[:, i] *= np.math.log(documents_amount / nw)
 
     def lra(self, k):
-        u, s, v = np.linalg.svd(self.matrix)
+        u, s, v = scipy.sparse.linalg.svds(self.matrix, k=k)
 
-        u = u[:, :k]
-        s = s[:k]
-        v = v[:k, :]
-
-        self.matrix = np.array(np.asmatrix(u) * np.asmatrix(np.diag(s)) * np.asmatrix(v))
+        self.matrix = scipy.sparse.csc_matrix(np.asmatrix(u) * np.asmatrix(np.diag(s)) * np.asmatrix(v))
 
     def normalize(self):
-        normalized = []
-        for i in range(len(self.matrix)):
-            normalized.append(Normalizer.normalize(self.matrix[i]))
-
-        self.matrix = np.array(normalized)
+        Normalizer.normalize(self.matrix.tocsr())
 
     def save(self):
         data = {
             "dictionary": self.dictionary,
             "documents": [{"url": self.documents[key]["url"], "title": self.documents[key]["title"]} for key in self.documents],
-            "matrix": self.matrix.tolist()
+            "matrix": self.matrix.toarray().tolist()
         }
 
         self.storage.save(data)

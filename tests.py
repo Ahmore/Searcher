@@ -1,5 +1,7 @@
 import time
 
+import scipy
+
 from engine.index import Index
 from engine.jsonstorage import JSONStorage
 
@@ -16,11 +18,12 @@ def slice_dict(dictionary, n):
     return result
 
 
+n = 10000
 st = time.time()
 
 print("[Loading data from JSON]")
 storage = JSONStorage("indexes/wikiindex_10000_no_idf_no_lra.json").load()
-documents = JSONStorage("wikidocuments1512165413.json").load()["documents"]
+documents = slice_dict(JSONStorage("documents/wikidocuments1512339671.json").load()["documents"], n)
 print("--- %s seconds ---" % (time.time() - st))
 
 print("")
@@ -33,16 +36,16 @@ for idf in range(2):
         if idf == 0 and lra == 0:
             continue
 
-        for k in range(1000, 10000, 2000):
+        for k in range(7000, 10000, 2000):
             st = time.time()
 
             print("[Indexing]")
-            index = Index(documents, ("indexes/wikiindex_10000%s_%s.json" %
-                                      ("_no_idf" if idf == 0 else "",
+            index = Index(documents, ("indexes/wikiindex_10000_%s_%s.json" %
+                                      ("no_idf" if idf == 0 else "idf",
                                       "no_lra" if lra == 0 else ("lra_%d" % k))))
 
             index.dictionary = storage["dictionary"]
-            index.matrix = storage["matrix"]
+            index.matrix = scipy.sparse.csc_matrix(storage["matrix"])
 
             print("")
 

@@ -1,9 +1,12 @@
-import numpy as np
+import scipy.sparse
+import scipy.sparse.linalg
 
 
 class Normalizer:
     @staticmethod
-    def normalize(vector):
-        norm = np.linalg.norm(vector)
+    def normalize(matrix):
+        rows, cold = matrix.shape
 
-        return np.divide(vector, norm)
+        for i in range(rows):
+            norm = scipy.sparse.linalg.norm(matrix[i, :])
+            matrix[i, :] /= norm
