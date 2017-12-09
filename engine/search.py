@@ -1,4 +1,6 @@
 import numpy as np
+import scipy
+import scipy.sparse
 
 from engine import stringparser, jsonstorage
 from engine.normalizer import Normalizer
@@ -17,7 +19,7 @@ class Search:
 
         self.dictionary = stg["dictionary"]
         self.documents = stg["documents"]
-        self.matrix = np.array(stg["matrix"])
+        self.matrix = scipy.sparse.csc_matrix(stg["matrix"])
 
     def eval(self, query, n):
         # Parse query words
@@ -27,10 +29,10 @@ class Search:
         vector = self.create_vector(words)
 
         # Normalize vector
-        vector = Normalizer.normalize(vector)
+        Normalizer.normalize(vector)
 
         # Count similarity of query to each document
-        similarity = [np.linalg.norm(s) for s in np.dot(vector, np.transpose(self.matrix))[0]]
+        similarity = [np.math.fabs(s) for s in (vector * self.matrix.transpose()).toarray()[0]]
 
         # Pair documents with theirs vectors
         pairs = []
@@ -56,7 +58,7 @@ class Search:
             if word in self.dictionary:
                 matrix[0][self.dictionary.index(word)] += 1
 
-        return matrix
+        return scipy.sparse.csc_matrix(matrix)
 
 
 
